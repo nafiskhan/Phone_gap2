@@ -1,0 +1,84 @@
+  <head>
+    <title>Storage Example</title>
+
+    <script type="text/javascript" charset="utf-8" src="cordova-2.6.0.js"></script>
+    <script type="text/javascript" charset="utf-8">
+
+    // Wait for Cordova to load
+    //
+    document.addEventListener("deviceready", onDeviceReady, false);
+
+    // Cordova is ready
+    //
+    function onDeviceReady() {
+        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(populateDB, errorCB, successCB);
+    }
+
+    // Populate the database 
+    //
+    function populateDB(tx) {
+         tx.executeSql('DROP TABLE IF EXISTS USER_DB');
+         tx.executeSql('CREATE TABLE IF NOT EXISTS LOGIN (USERNAME, PASSWORD)');
+         tx.executeSql('INSERT INTO LOGIN (USERNAME, PASSWORD) VALUES ("admin", "admin")');
+    }
+
+    // Transaction error callback
+    //
+    function errorCB(tx, err) {
+        alert("Error processing SQL: "+err);
+    }
+
+    // Transaction success callback
+    //
+    function successCB() {
+        alert("success!");
+    }
+
+	function check() {
+       var x=document.getElementById("uname").value;
+       var y=document.getElementById("pwd").value;
+        var db = window.openDatabase("Database", "1.0", "Cordova Demo", 200000);
+        db.transaction(function(transaction)
+        {
+        transaction.executeSql('SELECT * FROM LOGIN;',[],function(transaction,result)
+        {
+        	if(result!=null && result.rows!=null)
+        	{
+        		for(var i=0;i<result.rows.length;i++)
+        		{
+        			console.log("Reading from database");
+        			//var row = results.rows.item(i);
+        			
+        			//console.log(row);
+        			
+        		}
+        	}
+        	
+        })
+        }, errorCB, successCB);
+      	
+       
+    }
+    
+   
+    function querySuccess(tx, results) {
+	console.log("Returned rows = " + results.rows.length);
+		// this will be true since it was a select statement and so rowsAffected was 0
+	if (!resultSet.rowsAffected) {
+  	console.log('No rows affected!');
+  	return false;
+  	console.log("Last inserted row ID = " + results.insertId);
+}
+}
+    </script>
+  </head>
+  <body>
+  <form action="login.html">
+    User name : <input type ="text" id="uname"/><br/>
+    Password : <input type="password" id ="pwd"/><br/>
+    <input type="button" value ="Login" onClick="check()">
+    </form>
+    
+  </body>
+</html>
